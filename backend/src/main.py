@@ -15,6 +15,16 @@ logger = logging.getLogger(__name__)
 
 app = FastAPI()
 
+# CORS 設定の追加
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:3000"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+
 # データベースの初期化
 init_db()
 
@@ -34,7 +44,7 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 # トークン検証関数
 def verify_token(token: str):
     try:
-        expected_audience = "api://eaee100c-2044-4c5d-82d6-f9188d121653"
+        expected_audience = "<application id uri>"
         logger.info(f"Token: {token}")
         payload = jwt.decode(
             token,
@@ -92,6 +102,6 @@ def debug_token(token: str = Depends(oauth2_scheme)):
         token,
         "",
         options={"verify_signature": False, "verify_exp": False},
-        audience="api://eaee100c-2044-4c5d-82d6-f9188d121653",
+        audience="<application id uri>",
     )
     return {"token_payload": payload}
